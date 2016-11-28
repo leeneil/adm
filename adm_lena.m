@@ -18,16 +18,11 @@ colorbar;
 
 rng(5566);
 
-x_init = rand(size(img));
-y_init = rand(size(img));
-
-
-x_init( ~mask ) = 0;
+x_init = support_constraint( rand(size(img)), mask );
+y_init = yconstraint( rand(size(img)), fimg );
 
 figure(1011);
 imshow(x_init);
-
-y_init = ifft2( abs(fimg) .* exp( 1j * angle(fft2(y_init)) ), 'symmetric' );
 
 figure(1012);
 imshow(y_init);
@@ -39,23 +34,19 @@ y = y_init;
 lambda = zeros(size(x));
 pi0 = zeros(size(x));
 
-beta0 = 1;
+beta0 = 0.9;
 nu = beta0;
 
 for t = 1:n_iter
     disp(['iteration #' int2str(t)]);
     % update x
-    x = y - lambda;
-    x( ~mask ) = 0;
-    x( x < 0 ) = 0;
+    x = support_constraint( y - lambda, mask );
     % update pi0
-    
+
     % update y
-    y = x + pi0;
-    y = ifft2( abs(fimg) .* exp( 1j * angle(fft2(y)) ), 'symmetric' );
+    y = yconstraint( x + pi0, fimg );
     % update lambda
     lambda = lambda + beta0 * (x-y);
-    
 end
 
 
@@ -76,4 +67,3 @@ imagesc( lambda );
 colormap(jet);
 axis image;
 colorbar;
-
