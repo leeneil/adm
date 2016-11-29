@@ -12,12 +12,44 @@ imshow(img);
 % colormap(jet);
 % colorbar;
 
+Px = @(xin, mask) xin .* (mask & xin > 0);
+Py = @(yin, fimg) ifft2( abs(fimg) .* exp( 1j * angle(fft2(yin)) ), 'symmetric' );
+
+%% generate low-res
+
+xx = linspace(-0.5, 0.5, size(img, 2));
+yy = linspace(-0.5, 0.5, size(img, 1));
+
+[XX, YY] = meshgrid(xx, yy);
+RR = sqrt( XX.^2 + YY.^2 );
+
+sig = 0.0001;
+
+G = exp( -(RR).^2/(2*sig) );
+
+figure(3001);
+imagesc(G);
+axis image;
+colormap(jet);
+colorbar;
+
+
+img_lrs = ifft2( fft2(img) .* ifftshift(G), 'symmetric');
+
+figure(3002);
+imshow(img_lrs);
+
+
+
+
 %% Initialization
 
-rng(841);
+rng(5566);
 
-x_init = support_constraint( rand(size(img)), mask );
-y_init = yconstraint( rand(size(img)), fimg );
+z_init = rand(size(img));
+
+x_init = support_constraint( x_init, mask );
+y_init = Py( z_init, fimg );
 
 % figure(1011);
 % imshow(x_init);
@@ -27,23 +59,27 @@ y_init = yconstraint( rand(size(img)), fimg );
 
 %% ADM
 
-n_iter = 500;
+n_iter = 50;
 
 x = x_init;
 y = y_init;
 lambda = zeros(size(x));
 
-beta0 = 0.9;
-
-
+beta0 = 0.8;
+nu0 = 0.75;
 ers = zeros(2, n_iter);
+
+% img_lrs = 1 * mask;
+
 
 for t = 1:n_iter
     disp(['iteration #' int2str(t)]);
     % update x
-    x = support_constraint( lambda.*y - 1, mask );
+%     x = support_constraint( img_lrs - lambda, mask );
+%     x = Px( img_lrs - lambda, mask );
+    x = img_lrs - lambda;
     % update y
-    y = yconstraint( lambda.*x + 1, fimg );
+    y = Py( x + lambda, fimg );
     % update lambda
     lambda = lambda + beta0 * (x-y);
     
@@ -53,14 +89,15 @@ end
 
 %% plot
 
-er0 = er(img, x, mask);
+er_x = er(img, x, mask);
+er_y = er(img, y, mask);
 
 figure(2001);
 imagesc( x );
 axis image;
 colormap(gray);
 colorbar;
-title(['E_R = ' num2str(er0)]);
+title(['E_R = ' num2str(er_x)]);
 
 figure(2005);
 plot(1:n_iter, ers, 'LineWidth', 2);
@@ -77,6 +114,7 @@ imagesc( y );
 axis image;
 colormap(gray);
 colorbar;
+title(['E_R = ' num2str(er_y)]);
 
 figure(2003);
 imagesc( lambda );
