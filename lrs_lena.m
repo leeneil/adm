@@ -49,7 +49,7 @@ rng(5566);
 % z_init = rand(size(img));
 z_init = zeros(size(img));
 
-x_init = support_constraint( x_init, mask );
+x_init = support_constraint( z_init, mask );
 y_init = Py( z_init, fimg );
 
 % figure(1011);
