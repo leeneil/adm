@@ -23,7 +23,7 @@ yy = linspace(-0.5, 0.5, size(img, 1));
 [XX, YY] = meshgrid(xx, yy);
 RR = sqrt( XX.^2 + YY.^2 );
 
-sig = 0.0001;
+sig = 0.01;
 
 G = exp( -(RR).^2/(2*sig) );
 
@@ -46,7 +46,8 @@ imshow(img_lrs);
 
 rng(5566);
 
-z_init = rand(size(img));
+% z_init = rand(size(img));
+z_init = zeros(size(img));
 
 x_init = support_constraint( x_init, mask );
 y_init = Py( z_init, fimg );
