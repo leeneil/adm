@@ -23,7 +23,7 @@ yy = linspace(-0.5, 0.5, size(img, 1));
 [XX, YY] = meshgrid(xx, yy);
 RR = sqrt( XX.^2 + YY.^2 );
 
-sig = 0.005;
+sig = 0.01;
 G = exp( -(RR).^2/(2*sig) );
 
 % figure(3001);
@@ -96,22 +96,39 @@ set(gca, 'FontSize', 16);
 xlabel('iteration number');
 ylabel('E_R');
 legend('x');
+
+
+%% test 6: HIO+
+
+fimg_ph = fimg .* exp( 1j*angle(fft(img_lrs)) );
+
+tic;
+[x6, efs6, ers6] = hio2d(fimg_ph, mask, n_iter, fimg==0, [], img);
+toc
+timers(5) = toc;
+
+figure(3016);
+plot(1:n_iter, ers6, 'LineWidth', 2);
+set(gca, 'FontSize', 16);
+xlabel('iteration number');
+ylabel('E_R');
+legend('x');
 %% comparison
 
 t = 1:n_iter;
 
 figure(5001);
-plot(t, ers5, t, ers1(1,:), t, ers4(1,:), t, ers2(1,:), 'LineWidth', 2);
+plot(t, ers5, t, ers6, t, ers1(1,:), t, ers4(1,:), t, ers2(1,:), 'LineWidth', 2);
 set(gca, 'FontSize', 16);
 xlabel('iteration number');
 ylabel('E_R');
-legend('HIO','ADM-HIO', 'HIO-LR', 'ADM-HIO-LR');
+legend('HIO', 'HIO+phase', 'ADM-HIO', 'HIO-LR', 'ADM-HIO-LR');
 
 figure(5002);
-semilogy(t, ers5, t, ers1(1,:), t, ers4(1,:), t, ers2(1,:), 'LineWidth', 2);
+semilogy(t, ers5, t, ers6, t, ers1(1,:), t, ers4(1,:), t, ers2(1,:), 'LineWidth', 2);
 set(gca, 'FontSize', 16);
 xlabel('iteration number');
 ylabel('E_R');
-legend('HIO (Fienup)','ADM-HIO (Marchesini)', 'HIO-LR (Li)', 'ADM-HIO-LR (Li & Huang)');
+legend('HIO (Fienup)', 'HIO+phase', 'ADM-HIO (Marchesini)', 'HIO-LR (Li)', 'ADM-HIO-LR (Li & Huang)');
 
 save(['lena_lrs_sig' int0str(10000*sig, 5) '.mat'], 'x*', 'y*', 'ers*', 'efs*','timers', 't');
