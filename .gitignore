@@ -1,3 +1,8 @@
+
+*.fig
 *.m~
 *.asv
+*.mat
+*.jpg
+*.png
 .DS_Store
