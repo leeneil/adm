@@ -25,7 +25,7 @@ yy = linspace(-0.5, 0.5, size(img, 1));
 [XX, YY] = meshgrid(xx, yy);
 RR = sqrt( XX.^2 + YY.^2 );
 
-sig = 0.01;
+sig = 0.0001;
 G = exp( -(RR).^2/(2*sig) );
 
 % figure(3001);
@@ -133,4 +133,4 @@ xlabel('iteration number');
 ylabel('E_R');
 legend('HIO (Fienup)', 'HIO+phase', 'ADM-HIO (Marchesini)', 'HIO-LR (Li)', 'ADM-HIO-LR (Li & Huang)');
 
-save(['lena_lrs_sig' int0str(10000*sig, 5) '.mat'], 'x*', 'y*', 'ers*', 'efs*','timers', 't');
+save(['mimivirus_lrs_sig' int0str(10000*sig, 5) '.mat'], 'x*', 'y*', 'ers*', 'efs*','timers', 't');

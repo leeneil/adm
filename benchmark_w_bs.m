@@ -1,9 +1,10 @@
 n_iter = 100;
 
 wn = 0.1;
-bs = 20;
+bs = 25;
 
-load('lena_101.mat');
+% load('lena_101.mat');
+load('mimivirus_img_105.mat'); % mimivirus
 
 img = im2double(img_padded);
 fimg = abs(fft2(img));
@@ -48,7 +49,7 @@ img_lrs = ifft2( fft2(img) .* ifftshift(sqrt(G)), 'symmetric');
 
 figure(3002);
 imshow(img_lrs);
-imwrite(img_lrs, ['lena_lrs_sig' int0str(10000*sig, 5) '.png']);
+imwrite(img_lrs, ['mimivirus_lrs_sig' int0str(10000*sig, 5) '.png']);
 
 %% test 1: ADM-HIO
 
@@ -125,4 +126,4 @@ xlabel('iteration number');
 ylabel('E_R');
 legend('HIO (Fienup)','ADM-HIO (Marchesini)', 'HIO-LR (Li)', 'ADM-HIO-LR (Li & Huang)');
 
-save(['lena_lrs_sig' int0str(10000*sig, 5) '_nos' int0str(10000*wn, 7) '_bs' int0str(bs,3) '.mat'], 'x*', 'y*', 'ers*', 'efs*','timers', 't');
+save(['mimivirus_lrs_sig' int0str(10000*sig, 5) '_nos' int0str(10000*wn, 7) '_bs' int0str(bs,3) '.mat'], 'x*', 'y*', 'ers*', 'efs*','timers', 't');
