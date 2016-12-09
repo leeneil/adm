@@ -58,7 +58,7 @@ legend('x', 'y');
 %% test 2: ADM-HIO-LR
 
 tic;
-[x2,y2,lambda2,ers2] = adm_hio_lr(fimg, mask, img_lrs, n_iter, img);
+[x2,y2,lambda2,ers2] = adm_hio_lr(fimg, mask, img_lrs, n_iter, img, fimg==0);
 toc
 timers(2) = toc;
 
@@ -74,7 +74,7 @@ legend('x', 'y');
 %% test 4: HIO-LR-RS
 
 tic;
-[x4, efs4, ers4] = hio2d_lr_rs(fimg, mask, n_iter, img_lrs, img);
+[x4, efs4, ers4] = hio2d_lr_rs(fimg, mask, n_iter, img_lrs, img, fimg==0);
 toc
 times(4) = toc;
 
@@ -88,7 +88,7 @@ legend('x1', 'x2');
 %% test 5: HIO
 
 tic;
-[x5, efs5, ers5] = hio2d(fimg, mask, n_iter, fimg==0, [], img);
+[x5, efs5, ers5] = hio2d(fimg, mask, n_iter, fimg==0, [], img, fimg==0);
 toc
 timers(5) = toc;
 
@@ -105,7 +105,7 @@ legend('x');
 fimg_ph = fimg .* exp( 1j*angle(fft(img_lrs)) );
 
 tic;
-[x6, efs6, ers6] = hio2d(fimg_ph, mask, n_iter, fimg==0, [], img);
+[x6, efs6, ers6] = hio2d(fimg_ph, mask, n_iter, fimg==0, [], img, fimg==0);
 toc
 timers(5) = toc;
 
