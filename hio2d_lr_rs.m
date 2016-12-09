@@ -60,7 +60,7 @@ function [R, efs, ers] = hio2d_lr_rs(Fabs, S, n, img_lr, img_hr, varargin) % Fab
         
         rs(cond1) = previous(cond1) - beta1 .* rs(cond1);
         
-        ers(1,t) = er(img_hr, align2(img_hr, rs, 1), S);
+        ers(1,t) = er(img_hr, myalign(img_hr, rs), S);
         
 %         hr_er = er(img_hr, rs, S);
 %         ers(t) = hr_er;
@@ -77,7 +77,7 @@ function [R, efs, ers] = hio2d_lr_rs(Fabs, S, n, img_lr, img_hr, varargin) % Fab
             rs = rs + gamma * efs(t) *  (rs .* cm - rs);
         end
         
-        ers(2,t) = er(img_hr, align2(img_hr, rs, 1), S);
+        ers(2,t) = er(img_hr, myalign(img_hr, rs), S);
             
         cvg_er = er(previous, rs, S);
         if cvg_er < cvg_cutoff1
