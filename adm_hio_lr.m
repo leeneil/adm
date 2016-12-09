@@ -1,4 +1,4 @@
-function [x,y, lambda, ers] = adm_hio_lr(fimg, mask, img_lrs, n_iter, img)
+function [x,y, lambda, ers] = adm_hio_lr(fimg, mask, img_lrs, n_iter, img, unknown)
 rng(911);
 
 Px = @(xin, mask) xin .* (mask & xin > 0);
@@ -25,7 +25,10 @@ for t = 1:n_iter
     % update x
     x = img_lrs - lambda;
     % update y
-    y = Py( x + lambda, fimg );
+    u = fft2( x + lambda );
+    ph = angle(u);
+    u( ~unknown ) =  abs(fimg( ~unknown )) .* exp( 1j * ph( ~unknown ));
+    y = ifft2(u, 'symmetric');
     % update lambda
     lambda = lambda + beta0 * (x-y);
     
