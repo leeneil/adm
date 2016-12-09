@@ -1,8 +1,10 @@
-n_iter = 2000;
+n_iter = 100;
 
-load('lena_101.mat');
+% load('lena_101.mat'); % lena
+load('mimivirus_img_105.mat'); % mimivirus
 
 img = im2double(img_padded);
+img = img ./ max(img(:));
 fimg = abs(fft2(img));
 
 timers = zeros(5,1);
@@ -42,7 +44,7 @@ imwrite(img_lrs, ['lena_lrs_sig' int0str(10000*sig, 5) '.png']);
 %% test 1: ADM-HIO
 
 tic;
-[x1,y1,lambda1,ers1] = adm_hio(fimg, mask, n_iter, img);
+[x1,y1,lambda1,ers1] = adm_hio(fimg, mask, n_iter, img, fimg==0);
 toc
 timesr(1) = toc;
 
